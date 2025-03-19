@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                background-color: transparent;
+                font-family: sans-serif;
+                font-size: 24px;
+                font-weight: bold;
+            }
+            #display {
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #display div {
+                width: fit-content;
+                height: fit-content;
+                text-align: center;
+            }
+
+            [data-state=undecided]{
+                display: none;
+            }
+            [data-state=paused]{
+                background-color: rgba(205, 20, 20, 0.61);
+            }
+            [data-state=paused] div::after{
+                content: "Click to keep page open";
+            }
+            [data-state=playing]{
+                background-color: rgba(0, 193, 0, 0.55);
+            }
+            [data-state=playing] div::after{
+                content: "Page will stay open";
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div id="display" data-state="undecided">
+            <div></div>
+        </div>
+        <script>
+
+            // --
+
+            const nowMedia = () => `media.mp3?q=${Date.now()}`
+
+            const audio = document.createElement("audio")
+            audio.controls = false
+            audio.src = nowMedia()
+            audio.muted = true
+            audio.autoplay = true
+            document.body.appendChild(audio)
+
+            const listenEvents = ["keydown", "pointerdown", "click"]
+
+            const addAllListeners = (listener) => {
+                listenEvents.forEach(ev => {
+                    document.addEventListener(ev, listener)
+                });
+            }
+
+            const removeAllListeners = (listener) => {
+                listenEvents.forEach(ev => {
+                    document.removeEventListener(ev, listener)
+                });
+            }
+
+            const reload = () => {
+                audio.src = nowMedia()
+                audio.currentTime = 0
+                audio.play()
+            }
+
+            audio.onended = reload
+
+            const startMedia = () => {
+                reload()
+                audio.muted = false
+            }
+
+            audio.onplaying = () => removeAllListeners(startMedia)
+
+            addAllListeners(startMedia)
+
+            // --
+
+            const display = document.getElementById("display")
+
+            function checkAgain(){
+                window.setTimeout(() => {
+                    if (audio.paused){
+                        display.dataset.state = "paused"
+                        checkAgain()
+                    } else {
+                        display.dataset.state = "playing"
+                    }
+                }, 500);
+            }
+
+            checkAgain()
+
+        </script>
+    </body>
+</html>
