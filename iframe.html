@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,37 +7,22 @@
             height: 100%;
             padding: 0;
             margin: 0;
-            background-color: transparent;
+            background-color: black;   /* sfondo nero */
             font-family: sans-serif;
             font-size: 24px;
             font-weight: bold;
+            color: black;              /* testo nero */
         }
         #display {
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #display div {
-            width: fit-content;
-            height: fit-content;
-            text-align: center;
-        }
-        [data-state=pinging] {
-            background-color: rgba(0, 193, 0, 0.55);
-        }
-        [data-state=pinging] div::after {
-            content: "Page will stay open";
+            display: none;             /* nascondo completamente il contenitore */
         }
     </style>
 </head>
 <body>
-    <div id="display" data-state="pinging">
-        <div></div>
-    </div>
+    <div id="display"></div>
     <script>
         setInterval(() => {
-            // ping invisibile
+            // ping invisibile per mantenere la pagina attiva
             document.body.dataset.ping = Date.now();
         }, 30000); // ogni 30 secondi
     </script>
