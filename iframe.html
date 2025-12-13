@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,37 +24,20 @@
             height: fit-content;
             text-align: center;
         }
-        [data-state=paused] {
-            background-color: rgba(205, 20, 20, 0.61);
-        }
-        [data-state=paused] div::after {
-            content: "Page may close";
-        }
-        [data-state=playing] {
+        [data-state=pinging] {
             background-color: rgba(0, 193, 0, 0.55);
         }
-        [data-state=playing] div::after {
+        [data-state=pinging] div::after {
             content: "Page will stay open";
         }
     </style>
 </head>
 <body>
-    <div id="display" data-state="paused">
+    <div id="display" data-state="pinging">
         <div></div>
     </div>
     <script>
-        // --- AUDIO KEEP-ALIVE ---
-        const audio = document.createElement("audio");
-        audio.src = "media.mp3";
-        audio.autoplay = true;
-        audio.muted = true;   // parte subito
-        audio.loop = true;    // gira in loop
-        document.body.appendChild(audio);
-
-        const display = document.getElementById("display");
-
         setInterval(() => {
-            display.dataset.state = audio.paused ? "paused" : "playing";
             // ping invisibile
             document.body.dataset.ping = Date.now();
         }, 30000); // ogni 30 secondi
