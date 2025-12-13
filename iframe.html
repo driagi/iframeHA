@@ -23,50 +23,40 @@
             height: fit-content;
             text-align: center;
         }
-        [data-state=undecided]{
-            display: none;
-        }
-        [data-state=paused]{
+        [data-state=paused] {
             background-color: rgba(205, 20, 20, 0.61);
         }
-        [data-state=paused] div::after{
-            content: "Click to keep page open";
+        [data-state=paused] div::after {
+            content: "Page may close";
         }
-        [data-state=playing]{
+        [data-state=playing] {
             background-color: rgba(0, 193, 0, 0.55);
         }
-        [data-state=playing] div::after{
+        [data-state=playing] div::after {
             content: "Page will stay open";
         }
     </style>
 </head>
 <body>
-    <div id="display" data-state="undecided">
+    <div id="display" data-state="paused">
         <div></div>
     </div>
     <script>
         // --- AUDIO KEEP-ALIVE ---
-        const nowMedia = () => `media.mp3?q=${Date.now()}`;
-
         const audio = document.createElement("audio");
-        audio.src = nowMedia();
+        audio.src = "media.mp3";
         audio.autoplay = true;
-        audio.muted = true;   // resta silenziato per partire subito
+        audio.muted = true;   // parte subito
         audio.loop = true;    // gira in loop
         document.body.appendChild(audio);
 
-        // --- DISPLAY STATE ---
         const display = document.getElementById("display");
 
         setInterval(() => {
-            if (audio.paused) {
-                display.dataset.state = "paused";
-            } else {
-                display.dataset.state = "playing";
-            }
-            // ping invisibile per tenere viva la pagina
+            display.dataset.state = audio.paused ? "paused" : "playing";
+            // ping invisibile
             document.body.dataset.ping = Date.now();
-        }, 1000); // ogni secondo
+        }, 30000); // ogni 30 secondi
     </script>
 </body>
 </html>
