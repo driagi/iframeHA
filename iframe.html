@@ -1,63 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
+    <meta charset="UTF-8">
+    <title>Temperatura Meteo Erzelli</title>
     <style>
-        * {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            background-color: black;   /* sfondo nero */
-            font-family: sans-serif;
-            font-size: 24px;
-            font-weight: bold;
-            color: black;              /* testo nero */
-        }
-        #display {
-            border-radius: 12px;
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1020;
+            color: #f5f5f5;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
-        #display div {
-            width: fit-content;
-            height: fit-content;
-            text-align: center;
+        h1 {
+            margin-bottom: 0.5rem;
         }
-        [data-state=paused] {
-            background-color: rgba(205, 20, 20, 0.61);
+        #temp {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
         }
-        [data-state=paused] div::after {
-            content: "Page may close";
+        #status {
+            font-size: 0.9rem;
+            color: #aaa;
         }
-        [data-state=playing] {
-            background-color: rgba(0, 193, 0, 0.55);
-        }
-        [data-state=playing] div::after {
-            content: "Page will stay open";
+        .error {
+            color: #ff6666;
         }
     </style>
 </head>
 <body>
-    <div id="display" data-state="paused">
-        <div></div>
-    </div>
+
+    <h1>Temperatura attuale</h1>
+    <div id="temp">--.- °C</div>
+    <div id="status">In attesa del primo aggiornamento…</div>
+
     <script>
-        // --- AUDIO KEEP-ALIVE ---
-        const audio = document.createElement("audio");
-        audio.src = "media.mp3";
-        audio.autoplay = true;
-        audio.muted = true;   // parte subito
-        audio.loop = true;    // gira in loop
-        document.body.appendChild(audio);
+        const URL = "https://meteoerzelli.altervista.org/cu/realtime_data.json?1758811359697";
+        const tempEl = document.getElementById("temp");
+        const statusEl = document.getElementById("status");
 
-        const display = document.getElementById("display");
+        async function aggiornaTemperatura() {
+            const ora = new Date().toLocaleTimeString();
 
-        setInterval(() => {
-            display.dataset.state = audio.paused ? "paused" : "playing";
-            // ping invisibile
-            document.body.dataset.ping = Date.now();
-        }, 30000); // ogni 30 secondi
+            try {
+                statusEl.textContent = `Aggiorno dati… (${ora})`;
+                const response = await fetch(URL, { cache: "no-store" });
+
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+
+                const data = await response.json();
+
+                // Simuliamo msg.payload.temp -> data.payload.temp
+                const temp = data?.payload?.temp;
+
+                if (temp === undefined || temp === null) {
+                    tempEl.textContent = "N/D";
+                    statusEl.textContent = `Campo payload.temp non trovato (${ora})`;
+                    statusEl.classList.add("error");
+                    return;
+                }
+
+                tempEl.textContent = `${temp} °C`;
+                statusEl.textContent = `Ultimo aggiornamento: ${ora}`;
+                statusEl.classList.remove("error");
+
+            } catch (err) {
+                tempEl.textContent = "Errore";
+                statusEl.textContent = `Errore nel recupero dati: ${err.message} (${ora})`;
+                statusEl.classList.add("error");
+            }
+        }
+
+        // Primo aggiornamento subito
+        aggiornaTemperatura();
+        // Aggiornamento ogni 60 secondi
+        setInterval(aggiornaTemperatura, 60 * 1000);
     </script>
+
+</body>
+</html>
 </body>
 </html>
