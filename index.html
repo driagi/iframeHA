@@ -2,31 +2,47 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>DEBUG temperatura</title>
+  <title>Temperatura attuale (WO-Cloud)</title>
   <style>
-    body { font-family: system-ui, sans-serif; background:#111827; color:#e5e7eb;
-           margin:0; min-height:100vh; display:flex; flex-direction:column;
-           align-items:center; justify-content:center; }
-    #temp { font-size:3rem; margin:0.5rem 0; }
-    #status { font-size:0.9rem; color:#9ca3af; max-width:90%; text-align:center; }
-    pre { text-align:left; max-width:90%; max-height:40vh; overflow:auto;
-          background:#020617; padding:0.5rem 0.75rem; border-radius:0.5rem;
-          font-size:0.75rem; }
-    .error { color:#f97373; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #111827;
+      color: #e5e7eb;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.8rem;
+    }
+    #temp {
+      font-size: 4rem;
+      font-weight: 600;
+      margin: 0.5rem 0 0.25rem;
+    }
+    #status {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+    .error {
+      color: #f97373;
+    }
   </style>
 </head>
 <body>
-  <h1>DEBUG temperatura</h1>
+  <h1>Temperatura attuale</h1>
   <div id="temp">-- °C</div>
-  <div id="status">In attesa…</div>
-  <pre id="debug"></pre>
+  <div id="status">In attesa del primo aggiornamento…</div>
 
   <script>
     const URL = "https://api-web.wo-cloud.com/weather/nowcast/v10?altitude=0&astro_latitude=44.40&astro_longitude=8.96&c=d293ZWI6QzhMNFRINmVUbkRoVWFqYg==&grid_latitude=44.40&grid_longitude=8.96&language=it&latitude=44.40375&location_id=16120&longitude=8.94375&system_of_measurement=metric&timeformat=HH:mm&timezone=Europe/Rome&windunit=kmh";
 
-    const tempEl   = document.getElementById("temp");
+    const tempEl = document.getElementById("temp");
     const statusEl = document.getElementById("status");
-    const debugEl  = document.getElementById("debug");
 
     async function aggiornaTemperatura() {
       const ora = new Date().toLocaleTimeString("it-IT", {
@@ -36,40 +52,20 @@
       });
 
       try {
-        statusEl.textContent = `Chiamo API… (${ora})`;
-        statusEl.classList.remove("error");
-
-        const res  = await fetch(URL, { cache: "no-store" });
+        const res = await fetch(URL, { cache: "no-store" });
         const data = await res.json();
 
-        // Mostro l'intero JSON per sicurezza
-        debugEl.textContent = JSON.stringify(data, null, 2);
+        // ✅ Temperatura corretta
+        const temp = data?.current?.temperature?.air;
 
-        // Qui estraiamo in modo CHIARISSIMO
-        const current        = data.current;
-        const temperatureObj = current.temperature;
-        const air            = temperatureObj.air;
-
-        console.log("current =", current);
-        console.log("temperatureObj =", temperatureObj);
-        console.log("air =", air, " typeof:", typeof air);
-
-        // Mostra anche in debug
-        debugEl.textContent +=
-          "\n\n--- DEBUG CAMPi ---\n" +
-          "typeof current: "        + (typeof current)        + "\n" +
-          "typeof temperatureObj: " + (typeof temperatureObj) + "\n" +
-          "typeof air: "            + (typeof air)            + "\n" +
-          "valore air: "            + air + "\n";
-
-        if (typeof air !== "number") {
-          tempEl.textContent = "[valore NON numerico]";
-          statusEl.textContent = `air NON è un numero (${ora})`;
+        if (typeof temp !== "number") {
+          tempEl.textContent = "N/D";
+          statusEl.textContent = `Temperatura non trovata (${ora})`;
           statusEl.classList.add("error");
           return;
         }
 
-        tempEl.textContent = `${air} °C`;
+        tempEl.textContent = `${temp} °C`;
         statusEl.textContent = `Ultimo aggiornamento: ${ora}`;
         statusEl.classList.remove("error");
 
@@ -77,7 +73,6 @@
         tempEl.textContent = "Errore";
         statusEl.textContent = `Errore: ${err.message} (${ora})`;
         statusEl.classList.add("error");
-        debugEl.textContent = String(err);
       }
     }
 
