@@ -2,12 +2,12 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Temperatura Meteo Erzelli</title>
+  <title>Temperatura diretta (senza proxy)</title>
   <style>
     body {
       font-family: sans-serif;
-      background: #111;
-      color: #eee;
+      background: #1a1a1a;
+      color: #f0f0f0;
       text-align: center;
       padding-top: 5rem;
     }
@@ -19,6 +19,9 @@
       font-size: 0.9rem;
       color: #aaa;
     }
+    .error {
+      color: #ff6666;
+    }
   </style>
 </head>
 <body>
@@ -27,19 +30,22 @@
   <div id="status">In attesa…</div>
 
   <script>
-    const URL = "https://meteoerzelli.altervista.org/proxy.php"; // ← usa il proxy PHP su Altervista
+    const URL = "https://meteoerzelli.altervista.org/cu/realtime_data.json?1758811359697";
 
     async function aggiorna() {
       const ora = new Date().toLocaleTimeString();
       try {
         const res = await fetch(URL, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
         const temp = data?.payload?.temp;
         document.getElementById("temp").textContent = temp ? `${temp} °C` : "N/D";
         document.getElementById("status").textContent = `Aggiornato alle ${ora}`;
+        document.getElementById("status").classList.remove("error");
       } catch (err) {
         document.getElementById("temp").textContent = "Errore";
         document.getElementById("status").textContent = `Errore: ${err.message} (${ora})`;
+        document.getElementById("status").classList.add("error");
       }
     }
 
