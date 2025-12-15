@@ -1,116 +1,107 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Temperatura attuale (WO-Cloud)</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: #111111 !important; /* ✅ Sfondo uniforme */
-      height: 100%;
-    }
+  <meta charset="UTF-8">
+  <title>Temperatura attuale (WO-Cloud)</title>
 
-    body {
-      font-family: system-ui, sans-serif;
-      color: #e5e7eb;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    h1 {
-      margin: 0 0 0.5rem;
-      font-size: 1.8rem;
-    }
-
-    #temp {
-      font-size: 4rem;
-      font-weight: 600;
-      margin: 0.5rem 0 0.25rem;
-    }
-
-    #status {
-      font-size: 0.9rem;
-      color: #9ca3af;
-    }
-
-    .error {
-      color: #f97373;
-    }
-  </style>
-</head>
-<body>
-  <h1>Temperatura attuale</h1>
-  <div id="temp">-- °C</div>
-  <div id="status">In attesa del primo aggiornamento…</div>
-
-  <script>
-    const URL = "https://api-web.wo-cloud.com/weather/nowcast/v10?altitude=0&astro_latitude=44.40&astro_longitude=8.96&c=d293ZWI6QzhMNFRINmVUbkRoVWFqYg==&grid_latitude=44.40&grid_longitude=8.96&language=it&latitude=44.40375&location_id=16120&longitude=8.94375&system_of_measurement=metric&timeformat=HH:mm&timezone=Europe/Rome&windunit=kmh";
-
-    const tempEl = document.getElementById("temp");
-    const statusEl = document.getElementById("status");
-
-    async function aggiornaTemperatura() {
-      const ora = new Date().toLocaleTimeString("it-IT", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
-
-      try {
-        const res = await fetch(URL, { cache: "no-store" });
-        const data = await res.json();
-
-        const temp = data?.current?.temperature?.air;
-
-        if (typeof temp !== "number") {
-          tempEl.textContent = "N/D";
-          statusEl.textContent = `Temperatura non trovata (${ora})`;
-          statusEl.classList.add("error");
-          return;
-        }
-
-        tempEl.textContent = `${temp} °C`;
-        statusEl.textContent = `Ultimo aggiornamento: ${ora}`;
-        statusEl.classList.remove("error");
-
-      } catch (err) {
-        tempEl.textContent = "Errore";
-        statusEl.textContent = `Errore: ${err.message} (${ora})`;
-        statusEl.classList.add("error");
-      }
-    }
-
-    aggiornaTemperatura();
-    
-    // La funzione di aggiornamento principale (ogni 1 minuto) mantiene già attiva la pagina.
-    setInterval(aggiornaTemperatura, 30000); 
-
-    // -------------------------------------------------------------------
-    // Codice Anti-Timeout (Mantenimento Attività Leggero Aggiuntivo)
-    // -------------------------------------------------------------------
-
-    // Imposta un intervallo a 5 minuti (300.000 millisecondi), 
-    // molto inferiore al limite di 10 minuti.
-    const keepAliveInterval = 300000; 
-
-    function keepPageAlive() {
-        // Questa funzione esegue una modifica DOM molto leggera e non visibile,
-        // che costringe il browser a riconoscere che la pagina è "viva".
-        // Cambiamo il titolo del documento per segnalare l'attività.
-        const now = new Date();
-        document.title = "Attiva (" + now.toLocaleTimeString() + ")";
-
-        // Se hai bisogno di vedere il log (solo su console di sviluppo):
-        // console.log("Attività di mantenimento attiva eseguita.");
+  <style>
+    /* ✅ Forza lo sfondo anche dentro iframe */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #111111 !important;
+      background-color: #111111 !important;
+      forced-color-adjust: none !important;
+      color-scheme: only dark;
+      font-family: system-ui, sans-serif;
+      color: #e5e7eb;
     }
 
-    // Avvia l'intervallo di mantenimento attivo
-    setInterval(keepPageAlive, keepAliveInterval);
-    // -------------------------------------------------------------------
-  </script>
+    /* ✅ Rimuove qualsiasi immagine o overlay */
+    * {
+      background-image: none !important;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.8rem;
+    }
+
+    #temp {
+      font-size: 4rem;
+      font-weight: 600;
+      margin: 0.5rem 0 0.25rem;
+    }
+
+    #status {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+
+    .error {
+      color: #f97373;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Temperatura attuale</h1>
+  <div id="temp">-- °C</div>
+  <div id="status">In attesa del primo aggiornamento…</div>
+
+  <script>
+    const URL = "https://api-web.wo-cloud.com/weather/nowcast/v10?altitude=0&astro_latitude=44.40&astro_longitude=8.96&c=d293ZWI6QzhMNFRINmVUbkRoVWFqYg==&grid_latitude=44.40&grid_longitude=8.96&language=it&latitude=44.40375&location_id=16120&longitude=8.94375&system_of_measurement=metric&timeformat=HH:mm&timezone=Europe/Rome&windunit=kmh";
+
+    const tempEl = document.getElementById("temp");
+    const statusEl = document.getElementById("status");
+
+    async function aggiornaTemperatura() {
+      const ora = new Date().toLocaleTimeString("it-IT", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+
+      try {
+        const res = await fetch(URL, { cache: "no-store" });
+        const data = await res.json();
+
+        const temp = data?.current?.temperature?.air;
+
+        if (typeof temp !== "number") {
+          tempEl.textContent = "N/D";
+          statusEl.textContent = `Temperatura non trovata (${ora})`;
+          statusEl.classList.add("error");
+          return;
+        }
+
+        tempEl.textContent = `${temp} °C`;
+        statusEl.textContent = `Ultimo aggiornamento: ${ora}`;
+        statusEl.classList.remove("error");
+
+      } catch (err) {
+        tempEl.textContent = "Errore";
+        statusEl.textContent = `Errore: ${err.message} (${ora})`;
+        statusEl.classList.add("error");
+      }
+    }
+
+    aggiornaTemperatura();
+    setInterval(aggiornaTemperatura, 30000);
+
+    /* ✅ Anti-timeout */
+    setInterval(() => {
+      document.title = "Attiva (" + new Date().toLocaleTimeString() + ")";
+    }, 300000);
+  </script>
 </body>
 </html>
