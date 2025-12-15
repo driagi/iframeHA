@@ -1,89 +1,50 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>Temperatura Meteo Erzelli</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0b1020;
-            color: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            margin-bottom: 0.5rem;
-        }
-        #temp {
-            font-size: 4rem;
-            font-weight: bold;
-            margin: 0.5rem 0;
-        }
-        #status {
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-        .error {
-            color: #ff6666;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Temperatura Meteo Erzelli</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #eee;
+      text-align: center;
+      padding-top: 5rem;
+    }
+    #temp {
+      font-size: 4rem;
+      margin: 1rem 0;
+    }
+    #status {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
+  <h1>Temperatura attuale</h1>
+  <div id="temp">-- °C</div>
+  <div id="status">In attesa…</div>
 
-    <h1>Temperatura attuale</h1>
-    <div id="temp">--.- °C</div>
-    <div id="status">In attesa del primo aggiornamento…</div>
+  <script>
+    const URL = "https://meteoerzelli.altervista.org/proxy.php"; // ← usa il proxy PHP su Altervista
 
-    <script>
-        const URL = "https://meteoerzelli.altervista.org/cu/realtime_data.json?1758811359697";
-        const tempEl = document.getElementById("temp");
-        const statusEl = document.getElementById("status");
+    async function aggiorna() {
+      const ora = new Date().toLocaleTimeString();
+      try {
+        const res = await fetch(URL, { cache: "no-store" });
+        const data = await res.json();
+        const temp = data?.payload?.temp;
+        document.getElementById("temp").textContent = temp ? `${temp} °C` : "N/D";
+        document.getElementById("status").textContent = `Aggiornato alle ${ora}`;
+      } catch (err) {
+        document.getElementById("temp").textContent = "Errore";
+        document.getElementById("status").textContent = `Errore: ${err.message} (${ora})`;
+      }
+    }
 
-        async function aggiornaTemperatura() {
-            const ora = new Date().toLocaleTimeString();
-
-            try {
-                statusEl.textContent = `Aggiorno dati… (${ora})`;
-                const response = await fetch(URL, { cache: "no-store" });
-
-                if (!response.ok) {
-                    throw new Error("HTTP " + response.status);
-                }
-
-                const data = await response.json();
-
-                // Simuliamo msg.payload.temp -> data.payload.temp
-                const temp = data?.payload?.temp;
-
-                if (temp === undefined || temp === null) {
-                    tempEl.textContent = "N/D";
-                    statusEl.textContent = `Campo payload.temp non trovato (${ora})`;
-                    statusEl.classList.add("error");
-                    return;
-                }
-
-                tempEl.textContent = `${temp} °C`;
-                statusEl.textContent = `Ultimo aggiornamento: ${ora}`;
-                statusEl.classList.remove("error");
-
-            } catch (err) {
-                tempEl.textContent = "Errore";
-                statusEl.textContent = `Errore nel recupero dati: ${err.message} (${ora})`;
-                statusEl.classList.add("error");
-            }
-        }
-
-        // Primo aggiornamento subito
-        aggiornaTemperatura();
-        // Aggiornamento ogni 60 secondi
-        setInterval(aggiornaTemperatura, 60 * 1000);
-    </script>
-
-</body>
-</html>
+    aggiorna();
+    setInterval(aggiorna, 60000);
+  </script>
 </body>
 </html>
