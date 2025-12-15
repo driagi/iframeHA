@@ -58,7 +58,7 @@
         // ✅ Temperatura corretta: current.temperature.air
         const temp = data?.current?.temperature?.air;
 
-        if (temp === undefined) {
+        if (typeof temp !== "number") {
           tempEl.textContent = "N/D";
           statusEl.textContent = `Temperatura non trovata (${ora})`;
           statusEl.classList.add("error");
@@ -81,4 +81,5 @@
     setInterval(aggiornaTemperatura, 60000);
   </script>
 </body>
+</html>
 </html>
