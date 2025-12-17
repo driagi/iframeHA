@@ -102,10 +102,10 @@
 
             checkAgain()
 
-            // ✅ Click → sfondo e testo #111111
+            // ✅ Click → solo la scritta diventa #111111
             document.addEventListener("click", () => {
-                display.style.backgroundColor = "#111111";
-                display.style.color = "#111111";
+                const text = display.querySelector("div");
+                text.style.color = "#111111";
             });
         </script>
     </body>
