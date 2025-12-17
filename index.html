@@ -2,40 +2,39 @@
 <html>
     <head>
         <style>
-            * {
+            html, body {
                 width: 100%;
                 height: 100%;
-                padding: 0;
                 margin: 0;
-                background-color: transparent;
+                padding: 0;
+                background: #111111 !important;
                 font-family: sans-serif;
                 font-size: 24px;
                 font-weight: bold;
             }
+
             #display {
+                width: 100%;
+                height: 100%;
                 border-radius: 12px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                background: #111111 !important;
             }
 
             #display div {
                 width: fit-content;
                 height: fit-content;
                 text-align: center;
+                color: #ffffff;
             }
 
             [data-state=undecided]{
                 display: none;
             }
-            [data-state=paused]{
-                background-color: rgba(205, 20, 20, 0.61);
-            }
             [data-state=paused] div::after{
                 content: "Click to keep page open";
-            }
-            [data-state=playing]{
-                background-color: rgba(0, 193, 0, 0.55);
             }
             [data-state=playing] div::after{
                 content: "Page will stay open";
@@ -46,8 +45,8 @@
         <div id="display" data-state="undecided">
             <div></div>
         </div>
-        <script>
 
+        <script>
             const nowMedia = () => `media.mp3?q=${Date.now()}`
 
             const audio = document.createElement("audio")
@@ -103,12 +102,11 @@
 
             checkAgain()
 
-            // ✅ Modifica richiesta
+            // ✅ Click → sfondo e testo #111111
             document.addEventListener("click", () => {
                 display.style.backgroundColor = "#111111";
                 display.style.color = "#111111";
             });
-
         </script>
     </body>
 </html>
