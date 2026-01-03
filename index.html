@@ -76,7 +76,7 @@
 
             function updateDateTime() {
                 const now = new Date()
-                timeEl.textContent = now.toLocaleTimeString("it-IT")
+                timeEl.textContent = now.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })
                 dateEl.textContent = now.toLocaleDateString("it-IT")
             }
 
