@@ -27,17 +27,17 @@
                 width: fit-content;
                 height: fit-content;
                 text-align: center;
-                color: #ffffff;
+                color: #ffffff; /* colore iniziale */
             }
 
             [data-state=undecided]{
                 display: none;
             }
             [data-state=paused] div::after{
-                content: "Click to keep page open";
+                content: "";
             }
             [data-state=playing] div::after{
-                content: "Page will stay open";
+                content: "";
             }
         </style>
     </head>
@@ -88,6 +88,7 @@
             addAllListeners(startMedia)
 
             const display = document.getElementById("display")
+            const text = display.querySelector("div")
 
             function checkAgain(){
                 window.setTimeout(() => {
@@ -102,11 +103,22 @@
 
             checkAgain()
 
-            // ✅ Click → solo la scritta diventa #111111
+            // 🔥 Funzione per aggiornare data e ora
+            function updateDateTime() {
+                const now = new Date()
+                const date = now.toLocaleDateString("it-IT")
+                const time = now.toLocaleTimeString("it-IT")
+                text.textContent = `${date} ${time}`
+            }
+
+            // Aggiorna ogni secondo
+            setInterval(updateDateTime, 1000)
+            updateDateTime()
+
+            // 🔥 Click → cambia colore in #ffc107
             document.addEventListener("click", () => {
-                const text = display.querySelector("div");
-                text.style.color = "#111111";
-            });
+                text.style.color = "#ffc107"
+            })
         </script>
     </body>
 </html>
