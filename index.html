@@ -28,11 +28,11 @@
             }
 
             #time {
-                font-size: 64px; /* ora grande */
+                font-size: 64px;
             }
 
             #date {
-                font-size: 28px; /* data più piccola */
+                font-size: 28px;
                 margin-top: 10px;
             }
 
@@ -90,22 +90,8 @@
 
             addAllListeners(startMedia)
 
-            const display = document.getElementById("display")
             const timeEl = document.getElementById("time")
             const dateEl = document.getElementById("date")
-
-            function checkAgain(){
-                window.setTimeout(() => {
-                    if (audio.paused){
-                        display.dataset.state = "paused"
-                        checkAgain()
-                    } else {
-                        display.dataset.state = "playing"
-                    }
-                }, 500);
-            }
-
-            checkAgain()
 
             // 🔥 Aggiorna ora e data
             function updateDateTime() {
