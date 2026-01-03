@@ -50,50 +50,30 @@
         </div>
 
         <script>
-            const nowMedia = () => `media.mp3?q=${Date.now()}`
-
+            // 🎵 Audio ottimizzato
             const audio = document.createElement("audio")
-            audio.controls = false
-            audio.src = nowMedia()
+            audio.src = "media.mp3"   // niente timestamp
+            audio.loop = true         // loop nativo
             audio.muted = true
             audio.autoplay = true
             document.body.appendChild(audio)
 
-            const listenEvents = ["keydown", "pointerdown", "click"]
-
-            const addAllListeners = (listener) => {
-                listenEvents.forEach(ev => {
-                    document.addEventListener(ev, listener)
-                });
-            }
-
-            const removeAllListeners = (listener) => {
-                listenEvents.forEach(ev => {
-                    document.removeEventListener(ev, listener)
-                });
-            }
-
-            const reload = () => {
-                audio.src = nowMedia()
-                audio.currentTime = 0
-                audio.play()
-            }
-
-            audio.onended = reload
-
+            // Sblocco audio al primo tocco
             const startMedia = () => {
-                reload()
                 audio.muted = false
+                document.removeEventListener("click", startMedia)
+                document.removeEventListener("pointerdown", startMedia)
+                document.removeEventListener("keydown", startMedia)
             }
 
-            audio.onplaying = () => removeAllListeners(startMedia)
+            document.addEventListener("click", startMedia)
+            document.addEventListener("pointerdown", startMedia)
+            document.addEventListener("keydown", startMedia)
 
-            addAllListeners(startMedia)
-
+            // 🕒 Aggiornamento ora e data
             const timeEl = document.getElementById("time")
             const dateEl = document.getElementById("date")
 
-            // 🔥 Aggiorna ora e data
             function updateDateTime() {
                 const now = new Date()
                 timeEl.textContent = now.toLocaleTimeString("it-IT")
@@ -103,7 +83,7 @@
             setInterval(updateDateTime, 1000)
             updateDateTime()
 
-            // 🔥 Click → cambia colore in #ffc107
+            // 🎨 Click → cambia colore
             document.addEventListener("click", () => {
                 timeEl.style.color = "#ffc107"
                 dateEl.style.color = "#ffc107"
