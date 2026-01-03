@@ -9,7 +9,6 @@
                 padding: 0;
                 background: #111111 !important;
                 font-family: sans-serif;
-                font-size: 24px;
                 font-weight: bold;
             }
 
@@ -24,26 +23,30 @@
             }
 
             #display div {
-                width: fit-content;
-                height: fit-content;
                 text-align: center;
-                color: #ffffff; /* colore iniziale */
+                color: #ffffff;
+            }
+
+            #time {
+                font-size: 64px; /* ora grande */
+            }
+
+            #date {
+                font-size: 28px; /* data più piccola */
+                margin-top: 10px;
             }
 
             [data-state=undecided]{
                 display: none;
             }
-            [data-state=paused] div::after{
-                content: "";
-            }
-            [data-state=playing] div::after{
-                content: "";
-            }
         </style>
     </head>
     <body>
         <div id="display" data-state="undecided">
-            <div></div>
+            <div>
+                <div id="time"></div>
+                <div id="date"></div>
+            </div>
         </div>
 
         <script>
@@ -88,7 +91,8 @@
             addAllListeners(startMedia)
 
             const display = document.getElementById("display")
-            const text = display.querySelector("div")
+            const timeEl = document.getElementById("time")
+            const dateEl = document.getElementById("date")
 
             function checkAgain(){
                 window.setTimeout(() => {
@@ -103,21 +107,20 @@
 
             checkAgain()
 
-            // 🔥 Funzione per aggiornare data e ora
+            // 🔥 Aggiorna ora e data
             function updateDateTime() {
                 const now = new Date()
-                const date = now.toLocaleDateString("it-IT")
-                const time = now.toLocaleTimeString("it-IT")
-                text.textContent = `${date} ${time}`
+                timeEl.textContent = now.toLocaleTimeString("it-IT")
+                dateEl.textContent = now.toLocaleDateString("it-IT")
             }
 
-            // Aggiorna ogni secondo
             setInterval(updateDateTime, 1000)
             updateDateTime()
 
             // 🔥 Click → cambia colore in #ffc107
             document.addEventListener("click", () => {
-                text.style.color = "#ffc107"
+                timeEl.style.color = "#ffc107"
+                dateEl.style.color = "#ffc107"
             })
         </script>
     </body>
