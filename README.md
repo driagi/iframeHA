@@ -1,53 +1,53 @@
+
 # Echo Show Keep‑Alive for Home Assistant
 
-Un **keep‑alive leggero e dark‑themed** progettato per impedire ai dispositivi **Amazon Echo Show** di chiudere automaticamente il browser quando visualizzano dashboard Home Assistant tramite iframe.
+A lightweight, dark‑themed keep‑alive page designed to prevent **Amazon Echo Show** devices from timing out and returning to the home screen when displaying Home Assistant dashboards via an iframe.
 
-## 🚀 Il Problema
-Gli Echo Show chiudono il browser (Silk/Firefox) dopo pochi minuti di inattività, interrompendo la visualizzazione delle dashboard di Home Assistant.
+## 🚀 The Problem
+Echo Show devices automatically close the Silk or Firefox browser after a few minutes of inactivity, interrupting any Home Assistant dashboard displayed in a Webpage Card.
 
-## 💡 La Soluzione
-Questo progetto mantiene attiva la sessione del browser tramite:
+## 💡 The Solution
+This project keeps the browser session active by using:
 
-- **Audio Heartbeat** – un file audio (`media.mp3`) riprodotto in loop.
-- **Aggiornamenti del DOM** – orologio e data aggiornati ogni secondo per mantenere reattivo il rendering.
-- **Interazione utente** – un singolo tap abilita l’audio (richiesto dalle policy autoplay moderne).
+- **Audio Heartbeat** – continuously loops a media file (`media.mp3`), ideally a silent track.
+- **DOM Updates** – a live time/date display updated every second to keep the rendering engine active.
+- **User Interaction** – a single tap enables the unmuted audio, required by modern autoplay restrictions.
 
 ---
 
-## 🛠️ Installazione
+## 🛠️ Installation
 
-### 1. Carica i File
-Carica i seguenti file nella cartella `www` di Home Assistant  
-(di solito: `/config/www/echo-keepalive/`):
+### 1. Upload the Files
+Upload the following files to your Home Assistant `www` directory  
+(typically located at `/config/www/echo-keepalive/`):
 
 - `index.html`
-- `media.mp3` (consigliata una traccia silenziosa)
+- `media.mp3` (a silent audio file is recommended)
 
-### 2. Aggiungi alla Dashboard
-Crea una card **Webpage** in Home Assistant con:
+### 2. Add to Your Dashboard
+Create a **Webpage Card** in your Home Assistant dashboard:
 
 - **URL:** `/local/echo-keepalive/index.html`  
-- **Aspect Ratio:** `100%` (o adattalo al tuo Echo Show)
+- **Aspect Ratio:** `100%` (or adjust for your specific Echo Show model)
 
 ---
 
-## 📄 Utilizzo
+## 📄 How to Use
 
-1. Apri la dashboard sull’Echo Show.  
-2. **Tocca una volta lo schermo.**  
-   Serve per far partire l’audio non mutato (autoplay policies).  
-3. Il testo dell’orologio diventerà **giallo (#ffc107)** → significa che il keep‑alive è attivo.
+1. Open your dashboard on the Echo Show.  
+2. **Tap the screen once.**  
+   This is required to start audio playback due to browser autoplay policies.  
+3. The clock text will turn **yellow (#ffc107)**, indicating that the keep‑alive logic is active.
 
 ---
 
-## 📂 Struttura della Cartella
+## 📂 File Structure
 
 ```text
 /config/www/echo-keepalive/
 ├── index.html
 └── media.mp3
 ```
-
 ## ⚙️ Customization
 
 ### **Background**
