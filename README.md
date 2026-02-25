@@ -3,36 +3,37 @@
 A lightweight, dark-themed "Keep-Alive" page designed to prevent **Amazon Echo Show** devices from timing out and returning to the home screen when displaying Home Assistant dashboards.
 
 ## 🚀 The Problem
-Echo Show devices are notorious for closing the Silk or Firefox browser after a few minutes of inactivity, even when displaying a Home Assistant dashboard via an Iframe.
+Echo Show devices often close the browser (Silk or Firefox) after a few minutes of inactivity, even when displaying a Home Assistant dashboard.
 
 ## 💡 The Solution
-This project uses a combination of techniques to keep the browser session active:
-* **Audio Heartbeat:** Plays a media file (`media.mp3`) in a continuous loop.
-* **DOM Updates:** A real-time clock and date display that refreshes every second to keep the rendering engine busy.
-* **User Interaction:** Simple event listeners to unlock audio playback on the first touch.
+This project uses a hosted "heartbeat" page to keep the browser session active:
+* **Audio Heartbeat:** Plays a silent media file in a continuous loop.
+* **DOM Updates:** A real-time clock and date display that refreshes every second to keep the rendering engine active.
+* **Visual Feedback:** The clock turns **yellow** once activated to confirm the keep-alive script is running.
 
-## 🛠️ Installation
+## 🛠️ How to Use with Home Assistant
 
-### 1. Upload Files
-Upload the following files to your Home Assistant `www` folder (usually located at `/config/www/echo-keepalive/`):
-* `index.html` (the code provided)
-* `media.mp3` (any audio file; a silent track is recommended)
+You don't need to host any files locally. You can link directly to the hosted version.
 
-### 2. Add to Dashboard
-Add a **Webpage Card** to your Home Assistant Lovelace dashboard with the following settings:
+### 1. Add a Webpage Card
+Add a **Webpage Card** (Iframe) to your Home Assistant Lovelace dashboard with the following settings:
 
-* **URL:** `/local/echo-keepalive/index.html`
+* **URL:** `https://driagi.github.io/iframeHA/`
 * **Aspect Ratio:** 100% (or adjust to fit your specific Echo Show model)
+
+### 2. Interaction (Crucial)
+1. Open your dashboard on the **Echo Show**.
+2. **Tap the screen once** on the clock area. 
+3. Because of modern browser policies, audio/looping scripts cannot start "unmuted" without a user gesture. 
+4. Once you tap, the text color will change to **yellow (#ffc107)**, confirming that the "Keep-Alive" logic is now active.
 
 ---
 
-## 📄 How to Use
-1.  Open your dashboard on the Echo Show.
-2.  **Crucial:** Tap the screen once. Due to modern browser autoplay policies, the "Keep-Alive" audio cannot start unmuted without a user gesture.
-3.  The clock text will turn **yellow (#ffc107)** upon clicking, confirming that the audio is active and the "Keep-Alive" logic is running.
+## ⚙️ Features
+* **Dark Mode:** Background set to `#111111` to blend perfectly with Home Assistant's dark themes and save energy.
+* **Zero Maintenance:** Hosted on GitHub Pages; no need to manage local `.mp3` or `.html` files in your `/config/www/` folder.
+* **Localization:** Displays time and date in `it-IT` format.
 
-## 📂 File Structure
-```text
-/config/www/echo-keepalive/
-├── index.html
-└── media.mp3
+---
+
+*Note: This tool is a community workaround for Amazon's aggressive power-saving features. Performance may vary based on your Echo Show firmware version.*
