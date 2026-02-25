@@ -36,3 +36,11 @@ Add a **Webpage Card** to your Home Assistant Lovelace dashboard with the follow
 /config/www/echo-keepalive/
 ├── index.html
 └── media.mp3
+```
+
+##⚙️ Customization
+Background: The background is set to #111111 to blend perfectly with Home Assistant's dark mode and save energy on the display.
+
+Localization: The time and date are currently set to it-IT. You can change this in the index.html script section (e.g., to en-US or en-GB) by modifying the toLocaleTimeString and toLocaleDateString parameters.
+
+Appearance: You can easily modify the CSS inside index.html to change font sizes or colors to match your personal dashboard style.
