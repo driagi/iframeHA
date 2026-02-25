@@ -1,46 +1,61 @@
-# Echo Show Keep-Alive for Home Assistant
+# Echo Show Keep‑Alive for Home Assistant
 
-A lightweight, dark-themed "Keep-Alive" page designed to prevent **Amazon Echo Show** devices from timing out and returning to the home screen when displaying Home Assistant dashboards.
+Un **keep‑alive leggero e dark‑themed** progettato per impedire ai dispositivi **Amazon Echo Show** di chiudere automaticamente il browser quando visualizzano dashboard Home Assistant tramite iframe.
 
-## 🚀 The Problem
-Echo Show devices are notorious for closing the Silk or Firefox browser after a few minutes of inactivity, even when displaying a Home Assistant dashboard via an Iframe.
+## 🚀 Il Problema
+Gli Echo Show chiudono il browser (Silk/Firefox) dopo pochi minuti di inattività, interrompendo la visualizzazione delle dashboard di Home Assistant.
 
-## 💡 The Solution
-This project uses a combination of techniques to keep the browser session active:
-* **Audio Heartbeat:** Plays a media file (`media.mp3`) in a continuous loop.
-* **DOM Updates:** A real-time clock and date display that refreshes every second to keep the rendering engine busy.
-* **User Interaction:** Simple event listeners to unlock audio playback on the first touch.
+## 💡 La Soluzione
+Questo progetto mantiene attiva la sessione del browser tramite:
 
-## 🛠️ Installation
-
-### 1. Upload Files
-Upload the following files to your Home Assistant `www` folder (usually located at `/config/www/echo-keepalive/`):
-* `index.html` (the code provided)
-* `media.mp3` (any audio file; a silent track is recommended)
-
-### 2. Add to Dashboard
-Add a **Webpage Card** to your Home Assistant Lovelace dashboard with the following settings:
-
-* **URL:** `/local/echo-keepalive/index.html`
-* **Aspect Ratio:** 100% (or adjust to fit your specific Echo Show model)
+- **Audio Heartbeat** – un file audio (`media.mp3`) riprodotto in loop.
+- **Aggiornamenti del DOM** – orologio e data aggiornati ogni secondo per mantenere reattivo il rendering.
+- **Interazione utente** – un singolo tap abilita l’audio (richiesto dalle policy autoplay moderne).
 
 ---
 
-## 📄 How to Use
-1.  Open your dashboard on the Echo Show.
-2.  **Crucial:** Tap the screen once. Due to modern browser autoplay policies, the "Keep-Alive" audio cannot start unmuted without a user gesture.
-3.  The clock text will turn **yellow (#ffc107)** upon clicking, confirming that the audio is active and the "Keep-Alive" logic is running.
+## 🛠️ Installazione
 
-## 📂 File Structure
+### 1. Carica i File
+Carica i seguenti file nella cartella `www` di Home Assistant  
+(di solito: `/config/www/echo-keepalive/`):
+
+- `index.html`
+- `media.mp3` (consigliata una traccia silenziosa)
+
+### 2. Aggiungi alla Dashboard
+Crea una card **Webpage** in Home Assistant con:
+
+- **URL:** `/local/echo-keepalive/index.html`  
+- **Aspect Ratio:** `100%` (o adattalo al tuo Echo Show)
+
+---
+
+## 📄 Utilizzo
+
+1. Apri la dashboard sull’Echo Show.  
+2. **Tocca una volta lo schermo.**  
+   Serve per far partire l’audio non mutato (autoplay policies).  
+3. Il testo dell’orologio diventerà **giallo (#ffc107)** → significa che il keep‑alive è attivo.
+
+---
+
+## 📂 Struttura della Cartella
+
 ```text
 /config/www/echo-keepalive/
 ├── index.html
 └── media.mp3
 ```
 
-##⚙️ Customization
-Background: The background is set to #111111 to blend perfectly with Home Assistant's dark mode and save energy on the display.
+## ⚙️ Customization
 
-Localization: The time and date are currently set to it-IT. You can change this in the index.html script section (e.g., to en-US or en-GB) by modifying the toLocaleTimeString and toLocaleDateString parameters.
+### **Background**
+The background color is set to `#111111` to blend seamlessly with Home Assistant's dark mode and help reduce display power consumption.
 
-Appearance: You can easily modify the CSS inside index.html to change font sizes or colors to match your personal dashboard style.
+### **Localization**
+Time and date formatting are configured for `it-IT` by default.  
+You can change this by editing the `toLocaleTimeString()` and `toLocaleDateString()` settings inside `index.html`.
+
+### **Appearance**
+You can freely customize font sizes, colors, spacing, and overall layout by modifying the CSS section inside `index.html`.
